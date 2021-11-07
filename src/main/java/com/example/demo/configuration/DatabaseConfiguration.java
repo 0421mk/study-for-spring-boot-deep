@@ -21,6 +21,13 @@ public class DatabaseConfiguration {
 	
 	@Autowired
 	private ApplicationContext applicationContext;
+	
+	//mapUnderscoreToCamelCase 설정값 적용
+	@Bean
+	@ConfigurationProperties(prefix="mybatis.configuration")
+	public org.apache.ibatis.session.Configuration mybatisConfig() {
+		return new org.apache.ibatis.session.Configuration();
+	}
 
 	//hikari
 	@Bean
@@ -40,6 +47,7 @@ public class DatabaseConfiguration {
 		SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath:/mapper/**/sql-*.xml"));
+		sqlSessionFactoryBean.setConfiguration(mybatisConfig());
 		
 		return sqlSessionFactoryBean.getObject();
 	}
